@@ -3,13 +3,13 @@ include $(TOPDIR)/rules.mk
 PKG_NAME:=rahhid
 #PKG_VERSION:=0.0.1
 PKG_RELEASE:=1
-PKG_REV:=11812e3f1e0c81b9ab0f9cf8b03177d3b172c4a6
+PKG_REV:=c564a5061d8992e24841dc477598784a0a7dd91b
 PKG_VERSION:=$(PKG_REV)
 
 PKG_SOURCE:=rahhid-$(PKG_VERSION).tar.bz2
 PKG_SOURCE_SUBDIR:=rahhid-$(PKG_VERSION)
 PKG_SOURCE_PROTO:=git
-PKG_SOURCE_URL:=git://github.com/burghardt/rahhid.git
+PKG_SOURCE_URL:=https://github.com/burghardt/rahhid.git
 PKG_SOURCE_VERSION:=$(PKG_REV)
 
 PKG_BUILD_DIR:=$(BUILD_DIR)/rahhid-$(PKG_VERSION)
