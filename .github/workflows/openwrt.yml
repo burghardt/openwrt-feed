@@ -23,15 +23,17 @@ jobs:
         run: wget https://downloads.openwrt.org/releases/21.02.3/targets/mvebu/cortexa9/openwrt-sdk-21.02.3-mvebu-cortexa9_gcc-8.4.0_musl_eabi.Linux-x86_64.tar.xz
       - name: extract sdk
         run: tar xf openwrt-sdk-21.02.3-mvebu-cortexa9_gcc-8.4.0_musl_eabi.Linux-x86_64.tar.xz
-      - name: cd sdk
-        run: cd openwrt-sdk-21.02.3-mvebu-cortexa9_gcc-8.4.0_musl_eabi.Linux-x86_64
       - name: setup feeds
         run: |
+          cd openwrt-sdk-21.02.3-mvebu-cortexa9_gcc-8.4.0_musl_eabi.Linux-x86_64
           cp feeds.conf.default feeds.conf
           echo 'src-git burghardt https://github.com/burghardt/openwrt-feed.git' >> feeds.conf
       - name: feeds update
-        run: ./scripts/feeds update -a
-      - name: feeds install
-        run: ./scripts/feeds install -a -p burghardt
+        run: |
+          cd openwrt-sdk-21.02.3-mvebu-cortexa9_gcc-8.4.0_musl_eabi.Linux-x86_64
+          ./scripts/feeds update -a
+          ./scripts/feeds install -a -p burghardt
       - name: compile
-        run: make package/rahhid/compile
+        run: |
+          cd openwrt-sdk-21.02.3-mvebu-cortexa9_gcc-8.4.0_musl_eabi.Linux-x86_64
+          make package/rahhid/compile
