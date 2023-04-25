@@ -1,14 +1,20 @@
-name: rahhid
+name: openwrt
 
 on:
   push:
   pull_request:
   schedule:
-    - cron:  '0 0 * * *'
+    - cron: '0 0 * * *'
 
 jobs:
-  ubuntu:
-    name: ubuntu
+  openwrt:
+    strategy:
+      matrix:
+        version: [
+          "22.03.4-bcm47xx-generic_gcc-11.2.0_musl",
+          "22.03.4-armvirt-64_gcc-11.2.0_musl",
+          "22.03.4-x86-generic_gcc-11.2.0_musl",
+        ]
     runs-on: ubuntu-latest
     steps:
       - name: checkout
@@ -20,21 +26,25 @@ jobs:
             gcc-multilib g++-multilib gettext git libncurses5-dev libssl-dev \
             python3-distutils rsync unzip zlib1g-dev file wget
       - name: download sdk
-        run: wget https://downloads.openwrt.org/releases/21.02.3/targets/mvebu/cortexa9/openwrt-sdk-21.02.3-mvebu-cortexa9_gcc-8.4.0_musl_eabi.Linux-x86_64.tar.xz
+        run: |
+          release=$(cut -f1 -d- <<< ${{ matrix.version }})
+          target=$(cut -f2 -d- <<< ${{ matrix.version }})
+          variant=$(cut -f3 -d- <<< ${{ matrix.version }} | cut -f1 -d_)
+          wget https://downloads.openwrt.org/releases/${release}/targets/${target}/${variant}/openwrt-sdk-${{ matrix.version }}.Linux-x86_64.tar.xz
       - name: extract sdk
-        run: tar xf openwrt-sdk-21.02.3-mvebu-cortexa9_gcc-8.4.0_musl_eabi.Linux-x86_64.tar.xz
+        run: tar xf openwrt-sdk-${{ matrix.version }}.Linux-x86_64.tar.xz
       - name: setup feeds
         run: |
-          cd openwrt-sdk-21.02.3-mvebu-cortexa9_gcc-8.4.0_musl_eabi.Linux-x86_64
+          cd openwrt-sdk-${{ matrix.version }}.Linux-x86_64
           cp feeds.conf.default feeds.conf
           echo 'src-git burghardt https://github.com/burghardt/openwrt-feed.git' >> feeds.conf
       - name: feeds update
         run: |
-          cd openwrt-sdk-21.02.3-mvebu-cortexa9_gcc-8.4.0_musl_eabi.Linux-x86_64
+          cd openwrt-sdk-${{ matrix.version }}.Linux-x86_64
           ./scripts/feeds update -a
           ./scripts/feeds install -a -p burghardt
       - name: compile
         run: |
-          cd openwrt-sdk-21.02.3-mvebu-cortexa9_gcc-8.4.0_musl_eabi.Linux-x86_64
+          cd openwrt-sdk-${{ matrix.version }}.Linux-x86_64
           make defconfig
           make package/rahhid/compile
