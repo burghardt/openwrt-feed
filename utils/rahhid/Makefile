@@ -14,6 +14,7 @@ PKG_SOURCE_VERSION:=$(PKG_REV)
 
 PKG_BUILD_DIR:=$(BUILD_DIR)/rahhid-$(PKG_VERSION)
 PKG_BUILD_DEPENDS:=hidapi
+PKG_FORTIFY_SOURCE:=2
 
 include $(INCLUDE_DIR)/package.mk
 
@@ -31,6 +32,7 @@ define Package/rahhid/description
 endef
 
 define Build/Configure
+		sed -i 's/-Wformat-nonliteral//g' $(PKG_BUILD_DIR)/Makefile
 endef
 
 define Package/rahhid/install
