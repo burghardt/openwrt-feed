@@ -45,6 +45,7 @@ jobs:
         run: |
           cd openwrt-sdk-${{ matrix.version }}.Linux-x86_64
           cp feeds.conf.default feeds.conf
+          sed -Ei 's\https://git.openwrt.org/(project|feed|openwrt)\https://github.com/openwrt\g' feeds.conf
           echo 'src-git burghardt https://github.com/burghardt/openwrt-feed.git' >> feeds.conf
       - name: feeds update
         run: |
